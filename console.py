@@ -33,7 +33,7 @@ class HBNBCommand(cmd.Cmd):
     def preloop(self):
         """Prints if isatty is false"""
         if not sys.__stdin__.isatty():
-            print('(hbnb)')
+            print('(hbnb) ', end="")
 
     def precmd(self, line):
         """Reformat command line for advanced command syntax.
@@ -115,6 +115,43 @@ class HBNBCommand(cmd.Cmd):
         """ Overrides the emptyline method of CMD """
         pass
 
+    @staticmethod
+    def recognised_val(val):
+        import re
+
+        if re.findall(r'^"(([0-9\w_]+)|(\\"))+"$', val):
+            val = val[1:-1].replace("_", " ")
+        elif re.findall(r'^-?[1-9][0-9]*\.[0-9]+$', val):
+            val = float(val)
+        elif re.findall(r'^[1-9][0-9]*$', val):
+            val = int(val)
+        else:
+            val = ''
+        return val
+
+    @staticmethod
+    def parse_string_to_key_value(args, ls):
+        # name="Minya" -> ('name', '=', '"Minya"')
+        for arg in args:
+            arg = arg.partition('=')
+            if not arg[0] or arg[1] != '=' or not arg[2]:
+                continue
+            val = HBNBCommand.recognised_val(arg[2])
+            if val:
+                ls.append(arg[0])
+                ls.append(val)
+
+    @staticmethod
+    def parse_args(args):
+        list_of_key_val = []
+        HBNBCommand.parse_string_to_key_value(args, list_of_key_val)
+        dict_of_key_val = {}
+        for i, att_name in enumerate(list_of_key_val):
+            if i % 2 == 0:
+                att_val = list_of_key_val[i + 1]
+                dict_of_key_val.update({att_name: att_val})
+        return dict_of_key_val
+
     def do_create(self, args):
         """ Create an object of any class"""
         argv = args.strip().split()
@@ -124,9 +161,14 @@ class HBNBCommand(cmd.Cmd):
         elif argv[0] not in HBNBCommand.classes:
             print("** class doesn't exist **")
             return
-        new_instance = HBNBCommand.classes[argv[0]]()
+        dictionary_of_args = {}
+        if len(argv) > 1:
+            # take name=value args
+            dictionary_of_args = HBNBCommand.parse_args(argv[1:])
+        new_instance = HBNBCommand.classes[argv[0]](**dictionary_of_args)
         print(new_instance.id)
-        new_instance.save()
+        storage.new(new_instance)
+        storage.save()
 
     def help_create(self):
         """ Help information for the create method """
