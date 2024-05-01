@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 """ Console Module """
-import cmd
 import sys
+import cmd
 from models.base_model import BaseModel
 from models import storage
 from models.user import User
@@ -166,9 +166,11 @@ class HBNBCommand(cmd.Cmd):
             # take name=value args
             dictionary_of_args = HBNBCommand.parse_args(argv[1:])
         new_instance = HBNBCommand.classes[argv[0]](**dictionary_of_args)
+        print(new_instance)
         print(new_instance.id)
         storage.new(new_instance)
         storage.save()
+        print("after saving")
 
     def help_create(self):
         """ Help information for the create method """
