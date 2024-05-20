@@ -9,7 +9,7 @@ def do_pack():
     local("[ ! -d versions ] && mkdir versions")
 
     curr_time = datetime.now().strftime("%Y%m%d%H%M%S")
-    archive_name = "web_static_{}.tgz".format(curr_time)
+    archive_name = "versions/web_static_{}.tgz".format(curr_time)
 
     try:
         local("tar -cvzf {} web_static".format(archive_name))
