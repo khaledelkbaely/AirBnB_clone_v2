@@ -24,7 +24,7 @@ def do_deploy(archive_path):
         run('rm -rf /tmp/{}'.format(archive_name))
         run('mv {}/{}/web_static/* {}/{}'.format(
             path_for_folder, folder, path_for_folder, folder))
-        run('rm -rf {}/{}/web_static')
+        run('rm -rf {}/{}/web_static'.format(path_for_folder, folder))
         run('rm -rf /data/web_static/current')
         run('ln -s {}/{} /data/web_static/current'.format(
             path_for_folder, folder))
