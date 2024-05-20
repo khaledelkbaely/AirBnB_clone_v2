@@ -5,6 +5,7 @@ from datetime import datetime
 from os.path import exists, isdir
 
 env.hosts = ['54.234.82.159', '100.26.167.203']
+created_path = None
 
 
 def do_pack():
@@ -47,7 +48,9 @@ def do_deploy(archive_path):
 
 def deploy():
     """ create and disributes an archive to web servers """
-    path_to_archive = do_pack()
-    if not path_to_archive:
+    global created_path
+    if created_path is None:
+        created_path = do_pack()
+    if not created_path:
         return False
-    return do_deploy(path_to_archive)
+    return do_deploy(created_path)
