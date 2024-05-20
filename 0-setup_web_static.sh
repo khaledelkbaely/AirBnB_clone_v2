@@ -30,7 +30,7 @@ else
 	sudo ln -s /data/web_static/releases/test/ /data/web_static/current
 fi
 # give ownership of the /data/ to the ubuntu user and group with the recursive option
-sudo chown -R /data/ ubuntu:ubuntu
+sudo chown -R  ubuntu:ubuntu /data
 # update the nginx configuration to serve the /data/web_static/curent/ to hbnb_static (use alias)
 sudo sed -i "/server_name _;/a location \/hbnb_static {\n\t\talias \/data\/web_static\/current\/;\n\t}" /etc/nginx/sites-available/default
 # restart nginx
