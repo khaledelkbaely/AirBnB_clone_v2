@@ -119,7 +119,6 @@ class HBNBCommand(cmd.Cmd):
     def recognised_val(val):
         import re
 
-        print(val)
         if re.findall(r'^"(([0-9\w_\-@\.,]+)|(\\"))+"$', val):
             val = val[1:-1].replace("_", " ")
         elif re.findall(r'^-?[1-9][0-9]*\.[0-9]+$', val):
