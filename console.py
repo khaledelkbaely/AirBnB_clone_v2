@@ -167,8 +167,7 @@ class HBNBCommand(cmd.Cmd):
             dictionary_of_args = HBNBCommand.parse_args(argv[1:])
         new_instance = HBNBCommand.classes[argv[0]](**dictionary_of_args)
         print(new_instance.id)
-        storage.new(new_instance)
-        storage.save()
+        new_instance.save()
 
     def help_create(self):
         """ Help information for the create method """
