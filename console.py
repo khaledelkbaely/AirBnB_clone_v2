@@ -119,8 +119,10 @@ class HBNBCommand(cmd.Cmd):
     def recognised_val(val):
         import re
 
-        if re.findall(r'^"(([0-9\w_]+)|(\\"))+"$', val):
+        print(val)
+        if re.findall(r'^"(([0-9\w_\-@\.,]+)|(\\"))+"$', val):
             val = val[1:-1].replace("_", " ")
+            print(val)
         elif re.findall(r'^-?[1-9][0-9]*\.[0-9]+$', val):
             val = float(val)
         elif re.findall(r'^[1-9][0-9]*$', val):
@@ -137,6 +139,8 @@ class HBNBCommand(cmd.Cmd):
             if not arg[0] or arg[1] != '=' or not arg[2]:
                 continue
             val = HBNBCommand.recognised_val(arg[2])
+            print(arg[0])
+            print(val)
             if val:
                 ls.append(arg[0])
                 ls.append(val)
@@ -164,13 +168,13 @@ class HBNBCommand(cmd.Cmd):
         dictionary_of_args = {}
         if len(argv) > 1:
             # take name=value args
+            print(argv)
             dictionary_of_args = HBNBCommand.parse_args(argv[1:])
         new_instance = HBNBCommand.classes[argv[0]](**dictionary_of_args)
         print(new_instance)
         print(new_instance.id)
         storage.new(new_instance)
         storage.save()
-        print("after saving")
 
     def help_create(self):
         """ Help information for the create method """
@@ -369,3 +373,4 @@ class HBNBCommand(cmd.Cmd):
 
 if __name__ == "__main__":
     HBNBCommand().cmdloop()
+

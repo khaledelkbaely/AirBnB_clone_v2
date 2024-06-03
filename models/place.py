@@ -2,8 +2,6 @@
 """ holds class Place"""
 import models
 from models.base_model import BaseModel, Base
-from os import getenv
-import sqlalchemy
 from sqlalchemy import Column, String, Integer, Float, ForeignKey, Table
 from sqlalchemy.orm import relationship
 
@@ -12,11 +10,11 @@ if models.storage_t == 'db':
                           Column('place_id', String(60),
                                  ForeignKey('places.id', onupdate='CASCADE',
                                             ondelete='CASCADE'),
-                                 primary_key=True),
+                                 primary_key=True, nullable=False),
                           Column('amenity_id', String(60),
                                  ForeignKey('amenities.id', onupdate='CASCADE',
                                             ondelete='CASCADE'),
-                                 primary_key=True))
+                                 primary_key=True, nullable=False))
 
 
 class Place(BaseModel, Base):
@@ -33,7 +31,8 @@ class Place(BaseModel, Base):
         price_by_night = Column(Integer, nullable=False, default=0)
         latitude = Column(Float, nullable=True)
         longitude = Column(Float, nullable=True)
-        reviews = relationship("Review", backref="place")
+        reviews = relationship("Review", backref="place",
+                               cascade="all, delete, delete-orphan")
         amenities = relationship("Amenity", secondary="place_amenity",
                                  backref="place_amenities",
                                  viewonly=False)
@@ -73,6 +72,14 @@ class Place(BaseModel, Base):
             amenity_list = []
             all_amenities = models.storage.all(Amenity)
             for amenity in all_amenities.values():
-                if amenity.place_id == self.id:
+                if amenity.id in self.amenity_ids:
                     amenity_list.append(amenity)
             return amenity_list
+
+        @amenities.setter
+        def amenities(self, amenity):
+            """ setter for amenities attribute """
+            from models.amenity import Amenity
+            if isinstance(amenity, Amenity) and\
+                    amenity.id not in self.amenity_ids:
+                self.amenity_ids.append(amenity.id)
