@@ -2,7 +2,6 @@
 """ holds class State"""
 import models
 from models.base_model import BaseModel, Base
-from models.city import City
 from sqlalchemy import Column, String
 from sqlalchemy.orm import relationship
 
@@ -19,6 +18,7 @@ class State(BaseModel, Base):
         @property
         def cities(self):
             """getter for list of city instances related to the state"""
+            from models.city import City
             city_list = []
             all_cities = models.storage.all(City)
             for city in all_cities.values():
